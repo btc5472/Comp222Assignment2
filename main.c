@@ -132,7 +132,7 @@ void decimalToFloat()
 		decimal_point_shifts = -1;
 	} else if (decimal_point_shifts > 0)
 		decimal_point_shifts = decimal_point_shifts_const;
-	
+
 	for (int i = (23 - decimal_point_shifts); i > 0; i--) {
 		frac_of_dec *= 2;
 		if (frac_of_dec < 1) {
@@ -175,7 +175,7 @@ void floatToDecimal()
 		printf("A hex number was not entered, exiting program.\n");
 		exit(115);
 	}
-	
+
 	const unsigned long int fp_num_const = fp_num;
 
 
@@ -197,7 +197,7 @@ void floatToDecimal()
 	}
 	const unsigned int biased_exponent_const = exponent;
 	const int unbiased_exponent = exponent - 127;
-	
+
 	unsigned int mantissa = 0;
 	for (int i = 22; i >= 0; i--) {
 		if (fp_num >= pow(2, i)) {
@@ -256,7 +256,7 @@ void floatToDecimal()
 	if (biased_exponent_const == 0 && mantissa_const > 0)
 		printf("Denormalized number: %.10lf * 2^(-126)\n", fraction);
 	else {
-		printf("Unbiased Exponent: %d\n", unbiased_exponent);		
+		printf("Unbiased Exponent: %d\n", unbiased_exponent);
 		printf("Normalized Decimal: %lf\n", ((double)1 + fraction)); // 1 is added because it is a required implied num in IEEE 754
 		printf("Decimal: %.40lf\n", ((double)1 + fraction) * pow(2, unbiased_exponent)); // Decimal represented by the hex entered
 	}
