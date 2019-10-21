@@ -47,7 +47,10 @@ void decimalToFloat()
 
 	// Prompt for decimal number
 	printf("Enter the decimal representation: ");
-	scanf("%lf", &dec_num);
+	if (!scanf("%lf", &dec_num)) {
+		printf("Decimal number was not entered correctly. Exiting program.\n");
+		exit(116);
+	}
 
 	// Check for 0--if so, print result
 	if (dec_num == 0) {
@@ -57,7 +60,7 @@ void decimalToFloat()
 
 	const double dec_num_const = dec_num;
 
-	if (dec_num_const >= 1 || dec_num_const <= -1) {
+	if (dec_num_const >= 1 || dec_num_const <= -1) {	// If there is a number before the decimal point then save that num
 		whole_num_of_dec = dec_num_const;
 		long long int num = whole_num_of_dec;
 		whole_num_of_dec = num;
@@ -74,15 +77,15 @@ void decimalToFloat()
 		printf("Sign:1\n");
 
 
-	// Take absolute value of number before generating significand
-	dec_num = fabs(dec_num_const);
-
 	// Normalize number:
-	for (double dn = fabs(dec_num_const); dn >= 2; decimal_point_shifts++)
-		dn /= 2;
+	for (dec_num = fabs(dec_num_const); dec_num >= 2; decimal_point_shifts++) {
+		dec_num /= 2;
+	}
 
-	for (double dn = fabs(dec_num_const); dn < 1; decimal_point_shifts--)
-		dn *= 2;
+	for (dec_num = fabs(dec_num_const); dec_num < 1; decimal_point_shifts--) {
+		dec_num *= 2;
+	}
+	const long long int normalized_dec_num = dec_num;
 
 	// Decimal point shifts
 	const int decimal_point_shifts_const = decimal_point_shifts;
@@ -271,6 +274,7 @@ void floatToDecimal()
 // exp of dec has to be positive I think
 // 0.0000000000000000000000000000000000001 doesnt work
 
+/////////	 Make sure error handing of scanf works (Line 50). Make sure Normalizing the dec_num works (Line 80)   ////////////////
 
 // EXTRA CODE //////////////////////////////////
 
