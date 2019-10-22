@@ -72,11 +72,11 @@ void decimalToFloat()
 
 	// Print sign: if number > 0, sign is 0, else 1
 	if (dec_num_const >= 0) {
-		printf("Sign:0\n");
+		printf("Sign: +\n");
 		str_sign[0] = '0';
 	}
 	else {
-		printf("Sign:1\n");
+		printf("Sign: -\n");
 		str_sign[0] = '1';
 	}
 		
@@ -138,6 +138,7 @@ void decimalToFloat()
 	printf("%s", str_sign);
 	printf("%s", str_biased_exponent);
 	printf("%s", str_mantissa);
+	printf("\n");
 
 	return;
 }
@@ -153,7 +154,6 @@ void floatToDecimal()
 		printf("A hex number was not entered, exiting program.\n");
 		exit(115);
 	}
-
 	const unsigned long int fp_num_const = fp_num;
 
 
@@ -244,18 +244,33 @@ void floatToDecimal()
 
 // Convert to hex
 char toHEx(int dec_to_convert) {
-	char str[100];
+	char hexa_deci_num[100];
 
-	for(int i = 10; i <= 0; i--) {
-		if (dec_to_convert >= pow(8, i)) {
+	int i = 0;
+	while(dec_to_convert != 0) {
+		int temp  = 0;
 
+		// Storing remainder in temp variable.
+		temp = dec_to_convert % 16;
+
+		// Check if temp < 10
+		if(temp < 10) {
+			hexa_deci_num[i] = temp + 48;
+			i++;
 		}
 		else {
-
+			hexa_deci_num[i] = temp + 55;
+			i++;
 		}
+
+		dec_to_convert = dec_to_convert / 16;
 	}
 
-	return str;
+	// Printing hexadecimal number array in reverse order
+	for(int j=i-1; j>=0; j--)
+		printf("%c", hexa_deci_num[j]);
+
+	return "A";
 }
 
 // TODO: Decimals in option selector
