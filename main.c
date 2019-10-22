@@ -38,10 +38,10 @@ int main()
 	return(0);
 }
 
-// Decimal to IEEE-754 conversion
+// Decimal to float IEEE-754 conversion
 void decimalToFloat()
 {
-	double dec_num = 0, frac_of_dec = 0, whole_num_of_dec = 0;
+	double dec_num = 0, frac_of_dec = 0, whole_num_of_dec = 0, mantissa = 0;
 	int decimal_point_shifts = 0;
 	int exponent_of_dec = 0;
 
@@ -78,14 +78,15 @@ void decimalToFloat()
 
 
 	// Normalize number:
-	for (dec_num = fabs(dec_num_const); dec_num >= 2; decimal_point_shifts++) {
+	dec_num = fabs(dec_num_const);
+	for (; dec_num >= 2; decimal_point_shifts++) {
 		dec_num /= 2;
 	}
 
-	for (dec_num = fabs(dec_num_const); dec_num < 1; decimal_point_shifts--) {
+	for (; dec_num < 1; decimal_point_shifts--) {
 		dec_num *= 2;
 	}
-	const long long int normalized_dec_num = dec_num;
+	const double normalized_dec_num = dec_num;
 
 	// Decimal point shifts
 	const int decimal_point_shifts_const = decimal_point_shifts;
@@ -110,56 +111,69 @@ void decimalToFloat()
 
 	// Print Mantissa
 	printf("Mantissa:");
-	// Print 1st part of mantissa (Whole number part of decimal number without first leading 1)
-	whole_num_of_dec = fabs(whole_num_of_dec);
-	int i = 23, dps;
-	for (dps = decimal_point_shifts_const; i >= 0; i--) {
-		if (dps < 0)
-			break;
-		if (i == 23) {
-			whole_num_of_dec -= pow(2, decimal_point_shifts_const);
-			dps--;
-			continue; // Dont print first bit of the whole number
-		}
-
-		if (whole_num_of_dec >= pow(2, dps)) {
+	mantissa = normalized_dec_num - 1;
+	for (int i = 1; i < 24; i++) {
+		if (mantissa >= 1 / pow(2, i))
+		{
 			printf("%d", 1);
-			whole_num_of_dec -= pow(2, dps);
+			mantissa -= 1 / pow(2, i);
 		}
 		else
 			printf("%d", 0);
-		dps--;
-	}
-	// Print the 2nd (fraction) part of the mantissa
-	if (decimal_point_shifts_const < 0) {
-		decimal_point_shifts = -1;
-	} else if (decimal_point_shifts > 0)
-		decimal_point_shifts = decimal_point_shifts_const;
-
-	for (int i = (23 - decimal_point_shifts); i > 0; i--) {
-		frac_of_dec *= 2;
-		if (frac_of_dec < 1) {
-			if (whole_num_of_dec_const == 0 && i == 24) {
-				// Dont print bit
-			}
-			else
-				printf("%d", 0);
-		}
-		else if (frac_of_dec > 1) {
-			if (whole_num_of_dec_const == 0 && i == 24) {
-				frac_of_dec -= 1; // Dont print bit
-			}
-			else {
-				printf("%d", 1);
-				frac_of_dec -= 1;
-			}
-		}
-		else if (frac_of_dec == 1) {
-			printf("%d", 1);
-			frac_of_dec = 0;
-		}
 	}
 	printf("\n");
+
+	// Print 1st part of mantissa (Whole number part of decimal number without first leading 1)
+	//whole_num_of_dec = fabs(whole_num_of_dec);
+
+	//int i = 23, dps;
+	//for (dps = decimal_point_shifts_const; i >= 0; i--) {
+	//	if (dps < 0)
+	//		break;
+	//	if (i == 23) {
+	//		whole_num_of_dec -= pow(2, decimal_point_shifts_const);
+	//		dps--;
+	//		continue; // Dont print first bit of the whole number
+	//	}
+
+	//	if (whole_num_of_dec >= pow(2, dps)) {
+	//		printf("%d", 1);
+	//		whole_num_of_dec -= pow(2, dps);
+	//	}
+	//	else
+	//		printf("%d", 0);
+	//	dps--;
+	//}
+	//// Print the 2nd (fraction) part of the mantissa
+	//if (decimal_point_shifts_const < 0) {
+	//	decimal_point_shifts = -1;
+	//} else if (decimal_point_shifts > 0)
+	//	decimal_point_shifts = decimal_point_shifts_const;
+
+	//for (int i = (23 - decimal_point_shifts); i > 0; i--) {
+	//	frac_of_dec *= 2;
+	//	if (frac_of_dec < 1) {
+	//		if (whole_num_of_dec_const == 0 && i == 24) {
+	//			// Dont print bit
+	//		}
+	//		else
+	//			printf("%d", 0);
+	//	}
+	//	else if (frac_of_dec > 1) {
+	//		if (whole_num_of_dec_const == 0 && i == 24) {
+	//			frac_of_dec -= 1; // Dont print bit
+	//		}
+	//		else {
+	//			printf("%d", 1);
+	//			frac_of_dec -= 1;
+	//		}
+	//	}
+	//	else if (frac_of_dec == 1) {
+	//		printf("%d", 1);
+	//		frac_of_dec = 0;
+	//	}
+	//}
+	//printf("\n");
 
 	// Print IEEE-754 representation
 
@@ -167,7 +181,7 @@ void decimalToFloat()
 	return;
 }
 
-// IEEE-754 to Decimal conversion
+// Float IEEE-754 to Decimal conversion
 void floatToDecimal()
 {
 	unsigned long int fp_num = 0;
@@ -273,8 +287,6 @@ void floatToDecimal()
 // Make sure negatives work
 // exp of dec has to be positive I think
 // 0.0000000000000000000000000000000000001 doesnt work
-
-/////////	 Make sure error handing of scanf works (Line 50). Make sure Normalizing the dec_num works (Line 80)   ////////////////
 
 // EXTRA CODE //////////////////////////////////
 
