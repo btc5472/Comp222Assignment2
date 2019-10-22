@@ -42,8 +42,8 @@ int main()
 void decimalToFloat()
 {
 	double dec_num = 0, frac_of_dec = 0, whole_num_of_dec = 0, mantissa = 0;
-	int decimal_point_shifts = 0;
-	int exponent_of_dec = 0;
+	int decimal_point_shifts = 0, exponent_of_dec = 0;
+	char str_sign[2], str_biased_exponent[9], str_mantissa[24];
 
 	// Prompt for decimal number
 	printf("Enter the decimal representation: ");
@@ -71,10 +71,15 @@ void decimalToFloat()
 
 
 	// Print sign: if number > 0, sign is 0, else 1
-	if (dec_num_const >= 0)
+	if (dec_num_const >= 0) {
 		printf("Sign:0\n");
-	else
+		str_sign[0] = '0';
+	}
+	else {
 		printf("Sign:1\n");
+		str_sign[0] = '1';
+	}
+		
 
 
 	// Normalize number:
@@ -103,9 +108,12 @@ void decimalToFloat()
 		if (exponent_of_dec >= pow(2, i)) {
 			printf("%d", 1);
 			exponent_of_dec = (exponent_of_dec - pow(2, i));
+			str_biased_exponent[7-i] = '1';
 		}
-		else
+		else {
 			printf("%d", 0);
+			str_biased_exponent[7-i] = '0';
+		}
 	}
 	printf("\n");
 
@@ -117,66 +125,19 @@ void decimalToFloat()
 		{
 			printf("%d", 1);
 			mantissa -= 1 / pow(2, i);
+			str_mantissa[i-1] = '1';
 		}
-		else
+		else {
 			printf("%d", 0);
+			str_mantissa[i-1] = '0';
+		}	
 	}
 	printf("\n");
 
-	// Print 1st part of mantissa (Whole number part of decimal number without first leading 1)
-	//whole_num_of_dec = fabs(whole_num_of_dec);
-
-	//int i = 23, dps;
-	//for (dps = decimal_point_shifts_const; i >= 0; i--) {
-	//	if (dps < 0)
-	//		break;
-	//	if (i == 23) {
-	//		whole_num_of_dec -= pow(2, decimal_point_shifts_const);
-	//		dps--;
-	//		continue; // Dont print first bit of the whole number
-	//	}
-
-	//	if (whole_num_of_dec >= pow(2, dps)) {
-	//		printf("%d", 1);
-	//		whole_num_of_dec -= pow(2, dps);
-	//	}
-	//	else
-	//		printf("%d", 0);
-	//	dps--;
-	//}
-	//// Print the 2nd (fraction) part of the mantissa
-	//if (decimal_point_shifts_const < 0) {
-	//	decimal_point_shifts = -1;
-	//} else if (decimal_point_shifts > 0)
-	//	decimal_point_shifts = decimal_point_shifts_const;
-
-	//for (int i = (23 - decimal_point_shifts); i > 0; i--) {
-	//	frac_of_dec *= 2;
-	//	if (frac_of_dec < 1) {
-	//		if (whole_num_of_dec_const == 0 && i == 24) {
-	//			// Dont print bit
-	//		}
-	//		else
-	//			printf("%d", 0);
-	//	}
-	//	else if (frac_of_dec > 1) {
-	//		if (whole_num_of_dec_const == 0 && i == 24) {
-	//			frac_of_dec -= 1; // Dont print bit
-	//		}
-	//		else {
-	//			printf("%d", 1);
-	//			frac_of_dec -= 1;
-	//		}
-	//	}
-	//	else if (frac_of_dec == 1) {
-	//		printf("%d", 1);
-	//		frac_of_dec = 0;
-	//	}
-	//}
-	//printf("\n");
-
 	// Print IEEE-754 representation
-
+	printf("%s", str_sign);
+	printf("%s", str_biased_exponent);
+	printf("%s", str_mantissa);
 
 	return;
 }
