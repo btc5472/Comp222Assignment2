@@ -281,12 +281,23 @@ void floatToDecimal()
 	return;
 }
 
-// TODO: Test dec_num == 1
-// Decimals in option selector
-// Save sign, exp, and mantissa numbers to a string and then print the single string
-// Make sure negatives work
-// exp of dec has to be positive I think
-// 0.0000000000000000000000000000000000001 doesnt work
+// Convert to hex
+char toHEx(int dec_to_convert) {
+	char str[100];
+
+	for(int i = 10; i <= 0; i--) {
+		if (dec_to_convert >= pow(8, i)) {
+
+		}
+		else {
+
+		}
+	}
+
+	return str;
+}
+
+// TODO: Decimals in option selector
 
 // EXTRA CODE //////////////////////////////////
 
