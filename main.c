@@ -55,7 +55,7 @@ void decimalToFloat()
 
 	// Check for 0--if so, print result
 	if (dec_num == 0) {
-		printf("Sign: 0\nBiased Exponent : 00000000\nMantissa: 00000000000000000000000\nThe IEEE-754 representation is: 0.000000\n");
+		printf("*** Sign: 0\n*** Biased Exponent : 00000000\n*** Mantissa: 00000000000000000000000\n*** The IEEE-754 representation is: 0.000000\n");
 		return;
 	}
 
