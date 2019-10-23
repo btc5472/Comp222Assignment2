@@ -42,7 +42,7 @@ int main()
 // Decimal to float IEEE-754 conversion
 void decimalToFloat()
 {
-	double dec_num = 0, frac_of_dec = 0, whole_num_of_dec = 0, mantissa = 0;
+	double dec_num = 0, mantissa = 0, whole_num_of_dec = 0;// frac_of_dec = 0;
 	int decimal_point_shifts = 0, exponent_of_dec = 0;
 	char str_sign[2], str_biased_exponent[9], str_mantissa[24];
 
@@ -66,9 +66,9 @@ void decimalToFloat()
 		long long int num = whole_num_of_dec;
 		whole_num_of_dec = num;
 	}
-	const double whole_num_of_dec_const = whole_num_of_dec;
-	frac_of_dec = fabs(dec_num) - fabs(whole_num_of_dec);
-	const double frac_of_dec_const = frac_of_dec;
+	//const double whole_num_of_dec_const = whole_num_of_dec;
+	//frac_of_dec = fabs(dec_num) - fabs(whole_num_of_dec);
+	//const double frac_of_dec_const = frac_of_dec;
 
 
 	// Print sign: if number > 0, sign is 0, else 1
@@ -105,7 +105,7 @@ void decimalToFloat()
 	else
 		exponent_of_dec += 127;
 
-	printf("Biased Exponent: ");
+	printf("Biased exponent: ");
 	for (int i = 7; i >= 0; i--) {
 		if (exponent_of_dec >= pow(2, i)) {
 			printf("%d", 1);
@@ -183,7 +183,7 @@ void floatToDecimal()
 	unsigned long int fp_num = 0;
 
 	// Prompt for IEEE-754 representation
-	printf("Enter the IEEE-754 representation:");
+	printf("Enter the IEEE-754 representation:\n");
 	if (!scanf("%lx", &fp_num)) {
 		printf("A hex number was not entered, exiting program.\n");
 		exit(115);
@@ -270,7 +270,7 @@ void floatToDecimal()
 	else {
 		printf("Unbiased Exponent: %d\n", unbiased_exponent);
 		printf("Normalized Decimal: %lf\n", ((double)1 + fraction)); // 1 is added because it is a required implied num in IEEE 754
-		printf("Decimal: %.40lf\n", ((double)1 + fraction) * pow(2, unbiased_exponent)); // Decimal represented by the hex entered
+		printf("Decimal: %lf\n", ((double)1 + fraction) * pow(2, unbiased_exponent)); // Decimal represented by the hex entered
 	}
 
 	return;
@@ -278,22 +278,3 @@ void floatToDecimal()
 
 // TODO: Decimals in option selector
 // Switching doubles to long doubles may fix the flipping of the last bits
-
-// EXTRA CODE //////////////////////////////////
-
-	/* // Decimal to binary conversion
-	for (int i = 31; i >= 0; i--) {
-		int j = dec_num >> i;
-		if (j & 1)
-			printf("1");
-		else
-			printf("0");
-	}  */
-
-
-	//// Print IEEE-754 representation
-	//fputs("The IEEE-754 representation is : ", stdout);
-	//fputs(str_sign, stdout);
-	//fputs(str_biased_exponent, stdout);
-	//fputs(str_mantissa, stdout);
-	//printf("\n");
