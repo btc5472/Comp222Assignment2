@@ -8,6 +8,7 @@ Comp 222 Tues & Thurs 9:30am - 10:45pm
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 
 void decimalToFloat();
 void floatToDecimal();
@@ -19,7 +20,7 @@ int main()
 	do {
 		printf("Floating-point conversion:\n");
 		printf("1) Decimal to IEEE-754 conversion\n2) IEEE-754 to decimal representation\n3) Exit\n");
-		printf("Enter Selection:");
+		printf("Enter selection:\n");
 		scanf("%d", &choice);
 
 		if (choice == 1)
@@ -46,7 +47,7 @@ void decimalToFloat()
 	char str_sign[2], str_biased_exponent[9], str_mantissa[24];
 
 	// Prompt for decimal number
-	printf("Enter the decimal representation: ");
+	printf("Enter the decimal representation:\n");
 	if (!scanf("%lf", &dec_num)) {
 		printf("Decimal number was not entered correctly. Exiting program.\n");
 		exit(116);
@@ -72,14 +73,15 @@ void decimalToFloat()
 
 	// Print sign: if number > 0, sign is 0, else 1
 	if (dec_num_const >= 0) {
-		printf("Sign: +\n");
+		printf("Sign: 0\n");
 		str_sign[0] = '0';
+		str_sign[1] = 0;
 	}
 	else {
-		printf("Sign: -\n");
+		printf("Sign: 1\n");
 		str_sign[0] = '1';
+		str_sign[1] = 0;
 	}
-		
 
 
 	// Normalize number:
@@ -103,41 +105,73 @@ void decimalToFloat()
 	else
 		exponent_of_dec += 127;
 
-	printf("Biased Exponent:");
+	printf("Biased Exponent: ");
 	for (int i = 7; i >= 0; i--) {
 		if (exponent_of_dec >= pow(2, i)) {
 			printf("%d", 1);
 			exponent_of_dec = (exponent_of_dec - pow(2, i));
-			str_biased_exponent[7-i] = '1';
+			str_biased_exponent[7 - i] = '1';
 		}
 		else {
 			printf("%d", 0);
-			str_biased_exponent[7-i] = '0';
+			str_biased_exponent[7 - i] = '0';
 		}
 	}
+	str_biased_exponent[8] = 0;
 	printf("\n");
 
 	// Print Mantissa
-	printf("Mantissa:");
+	printf("Mantissa: ");
 	mantissa = normalized_dec_num - 1;
 	for (int i = 1; i < 24; i++) {
 		if (mantissa >= 1 / pow(2, i))
 		{
 			printf("%d", 1);
 			mantissa -= 1 / pow(2, i);
-			str_mantissa[i-1] = '1';
+			str_mantissa[i - 1] = '1';
 		}
 		else {
 			printf("%d", 0);
-			str_mantissa[i-1] = '0';
-		}	
+			str_mantissa[i - 1] = '0';
+		}
 	}
+	str_mantissa[23] = 0;
 	printf("\n");
 
 	// Print IEEE-754 representation
+	printf("The IEEE-754 representation is : ");
 	printf("%s", str_sign);
 	printf("%s", str_biased_exponent);
 	printf("%s", str_mantissa);
+	printf("\n");
+
+	// Make one long string representing the binary of the IEEE float number
+	char str_binary_of_float[33];
+	if (str_sign[0] == '0') {
+		str_binary_of_float[0] = '0';
+		str_binary_of_float[1] = 0;
+	}
+	else {
+		str_binary_of_float[0] = '1';
+		str_binary_of_float[1] = 0;
+	}
+	strcat(str_binary_of_float, str_biased_exponent);
+	strcat(str_binary_of_float, str_mantissa);
+
+	// Print Hexadecimal representation
+	printf("IEEE HEX: ");
+	for (int nybble = 0; nybble < 8; nybble++) { // nybble is half a byte (4 bits)
+		int val_of_nyb = 0;
+		for (int bit = 0; bit < 4; bit++) {
+			if (str_binary_of_float[nybble * 4 + bit] == '1') {
+				val_of_nyb += pow(2, 3 - bit);
+			}
+		}
+		if (val_of_nyb <= 9)
+			printf("%c", val_of_nyb + 48);
+		else
+			printf("%c", val_of_nyb + 87);
+	}
 	printf("\n");
 
 	return;
@@ -168,9 +202,9 @@ void floatToDecimal()
 
 	int exponent = 0;
 	for (int i = 8; i > 0; i--) {
-		if (fp_num >= pow(2, i+22)) {
-			exponent += pow(2, i-1);
-			fp_num -= pow(2, i+22);
+		if (fp_num >= pow(2, i + 22)) {
+			exponent += pow(2, i - 1);
+			fp_num -= pow(2, i + 22);
 		}
 	}
 	const unsigned int biased_exponent_const = exponent;
@@ -189,15 +223,15 @@ void floatToDecimal()
 	// Special case check for fp_num
 	// Check for NaN
 	if (mantissa_const > 0 && biased_exponent_const == 255) {
-		printf("NaN\n");
+		printf("Sign: -\nSpecial case: NaN\n");
 		return;
 	}
 	// Check for +-Infinity
 	if (biased_exponent_const == 255) {
 		if (sign == 0)
-			printf("+Infinity\n");
+			printf("Sign: +\nSpecial case: Infinity\n");
 		else
-			printf("-Infinity\n");
+			printf("Sign: -\nSpecial case: Infinity\n");
 		return;
 	}
 	// Check for +-0
@@ -242,38 +276,8 @@ void floatToDecimal()
 	return;
 }
 
-// Convert to hex
-char toHEx(int dec_to_convert) {
-	char hexa_deci_num[100];
-
-	int i = 0;
-	while(dec_to_convert != 0) {
-		int temp  = 0;
-
-		// Storing remainder in temp variable.
-		temp = dec_to_convert % 16;
-
-		// Check if temp < 10
-		if(temp < 10) {
-			hexa_deci_num[i] = temp + 48;
-			i++;
-		}
-		else {
-			hexa_deci_num[i] = temp + 55;
-			i++;
-		}
-
-		dec_to_convert = dec_to_convert / 16;
-	}
-
-	// Printing hexadecimal number array in reverse order
-	for(int j=i-1; j>=0; j--)
-		printf("%c", hexa_deci_num[j]);
-
-	return "A";
-}
-
 // TODO: Decimals in option selector
+// Switching doubles to long doubles may fix the flipping of the last bits
 
 // EXTRA CODE //////////////////////////////////
 
@@ -285,3 +289,11 @@ char toHEx(int dec_to_convert) {
 		else
 			printf("0");
 	}  */
+
+
+	//// Print IEEE-754 representation
+	//fputs("The IEEE-754 representation is : ", stdout);
+	//fputs(str_sign, stdout);
+	//fputs(str_biased_exponent, stdout);
+	//fputs(str_mantissa, stdout);
+	//printf("\n");
