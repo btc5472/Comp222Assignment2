@@ -19,7 +19,7 @@ int main()
 
 	do {
 		printf("Floating-point conversion:\n");
-		printf("1) Decimal to IEEE-754 conversion\n2) IEEE-754 to decimal representation\n3) Exit\n");
+		printf("1) Decimal to IEEE-754 conversion\n2) IEEE-754 to decimal conversion\n3) Exit\n");
 		printf("Enter selection:\n");
 		scanf("%d", &choice);
 
@@ -35,7 +35,7 @@ int main()
 	} while (choice != 3);
 
 	// Choice == 3 so quit program
-	printf("\nProgram Terminated Normally");
+	printf("\n*** Program Terminated Normally");
 	return(0);
 }
 
@@ -73,12 +73,12 @@ void decimalToFloat()
 
 	// Print sign: if number > 0, sign is 0, else 1
 	if (dec_num_const >= 0) {
-		printf("Sign: 0\n");
+		printf("*** Sign: 0\n");
 		str_sign[0] = '0';
 		str_sign[1] = 0;
 	}
 	else {
-		printf("Sign: 1\n");
+		printf("*** Sign: 1\n");
 		str_sign[0] = '1';
 		str_sign[1] = 0;
 	}
@@ -105,7 +105,7 @@ void decimalToFloat()
 	else
 		exponent_of_dec += 127;
 
-	printf("Biased exponent: ");
+	printf("*** Biased exponent: ");
 	for (int i = 7; i >= 0; i--) {
 		if (exponent_of_dec >= pow(2, i)) {
 			printf("%d", 1);
@@ -121,7 +121,7 @@ void decimalToFloat()
 	printf("\n");
 
 	// Print Mantissa
-	printf("Mantissa: ");
+	printf("*** Mantissa: ");
 	mantissa = normalized_dec_num - 1;
 	for (int i = 1; i < 24; i++) {
 		if (mantissa >= 1 / pow(2, i))
@@ -139,11 +139,14 @@ void decimalToFloat()
 	printf("\n");
 
 	// Print IEEE-754 representation
-	printf("The IEEE-754 representation is : ");
-	printf("%s", str_sign);
-	printf("%s", str_biased_exponent);
-	printf("%s", str_mantissa);
-	printf("\n");
+	if (dec_num_const == 0) {
+		printf("*** The IEEE-754 representation is: 0.000000");
+	}
+	//printf("The IEEE-754 representation is: ");
+	//printf("%s", str_sign);
+	//printf("%s", str_biased_exponent);
+	//printf("%s", str_mantissa);
+	//printf("\n");
 
 	// Make one long string representing the binary of the IEEE float number
 	char str_binary_of_float[33];
@@ -159,7 +162,7 @@ void decimalToFloat()
 	strcat(str_binary_of_float, str_mantissa);
 
 	// Print Hexadecimal representation
-	printf("IEEE HEX: ");
+	printf("*** IEEE HEX: ");
 	for (int nybble = 0; nybble < 8; nybble++) { // nybble is half a byte (4 bits)
 		int val_of_nyb = 0;
 		for (int bit = 0; bit < 4; bit++) {
@@ -223,24 +226,24 @@ void floatToDecimal()
 	// Special case check for fp_num
 	// Check for NaN
 	if (mantissa_const > 0 && biased_exponent_const == 255) {
-		printf("Sign: -\nSpecial case: NaN\n");
+		printf("*** Sign: -\n*** Special case: NaN\n");
 		return;
 	}
 	// Check for +-Infinity
 	if (biased_exponent_const == 255) {
 		if (sign == 0)
-			printf("Sign: +\nSpecial case: Infinity\n");
+			printf("*** Sign: +\n*** Special case: Infinity\n");
 		else
-			printf("Sign: -\nSpecial case: Infinity\n");
+			printf("*** Sign: -\n*** Special case: Infinity\n");
 		return;
 	}
 	// Check for +-0
 	if (fp_num_const == 0) {
-		printf("Sign: +\nUnbiased Exponent: 0.0\nNormalized Decimal: 0.0\nDecimal: 0.0\n");
+		printf("*** Sign: +\n*** Unbiased Exponent: 0.0\n*** Normalized Decimal: 0.0\n*** Decimal: 0.0\n");
 		return;
 	}
 	else if (fp_num_const == pow(2, 31)) {
-		printf("Sign: -\nnUnbiased Exponent: 0.0\nNormalized Decimal: 0.0\nDecimal: 0.0\n");
+		printf("*** Sign: -\nn*** Unbiased Exponent: 0.0\n*** Normalized Decimal: 0.0\n*** Decimal: 0.0\n");
 		return;
 	}
 
@@ -248,10 +251,10 @@ void floatToDecimal()
 	// Print results
 	// Print Sign
 	if (sign == 0) {
-		printf("Sign: +\n");
+		printf("*** Sign: +\n");
 	}
 	else
-		printf("Sign: -\n");
+		printf("*** Sign: -\n");
 
 	// Calculate fraction of mantissa
 	double fraction = 0;
@@ -266,11 +269,14 @@ void floatToDecimal()
 	// If unbiased exponent=0, number is denormalized with unbiased exponent of -126,
 	// print denormalized number as fraction * 2^(-126), return
 	if (biased_exponent_const == 0 && mantissa_const > 0)
-		printf("Denormalized number: %.10lf * 2^(-126)\n", fraction);
+		printf("*** Denormalized number: %.10lf * 2^(-126)\n", fraction);
 	else {
-		printf("Unbiased Exponent: %d\n", unbiased_exponent);
-		printf("Normalized Decimal: %lf\n", ((double)1 + fraction)); // 1 is added because it is a required implied num in IEEE 754
-		printf("Decimal: %lf\n", ((double)1 + fraction) * pow(2, unbiased_exponent)); // Decimal represented by the hex entered
+		printf("*** Unbiased Exponent: %d\n", unbiased_exponent);
+		printf("*** Normalized Decimal: %lf\n", ((double)1 + fraction)); // 1 is added because it is a required implied num in IEEE 754
+		if (sign == 0)
+			printf("*** Decimal: %lf\n", ((double)1 + fraction) * pow(2, unbiased_exponent));  // Decimal represented by the hex entered
+		else
+			printf("*** Decimal: -%lf\n", ((double)1 + fraction) * pow(2, unbiased_exponent)); // Decimal represented by the hex entered
 	}
 
 	return;
